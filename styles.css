@@ -33,13 +33,13 @@
   color: var(--text-muted);
   user-select: none;
 }
-.folder-tags-rule-name {
+details.folder-tags-rule input.folder-tags-rule-name {
   width: 100%;
   min-width: 0;
   font-weight: 600;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 .folder-tags-rule-body {
   padding: 0 10px 10px;

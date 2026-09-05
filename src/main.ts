@@ -23,7 +23,8 @@ export default class FolderTagsPlugin extends Plugin {
   settings: FolderTagsSettings = DEFAULT_SETTINGS;
 
   async onload(): Promise<void> {
-    this.settings = normalizeSettings(await this.loadData());
+    const data: unknown = await this.loadData();
+    this.settings = normalizeSettings(data);
     this.addSettingTab(new FolderTagsSettingTab(this.app, this));
     this.registerCommands();
     this.app.workspace.onLayoutReady(() =>

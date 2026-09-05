@@ -3,6 +3,7 @@ import {
   Modal,
   PluginSettingTab,
   Setting,
+  type SettingDefinitionItem,
   TextComponent,
   ToggleComponent,
 } from "obsidian";
@@ -19,12 +20,33 @@ export class FolderTagsSettingTab extends PluginSettingTab {
   ) {
     super(app, plugin);
   }
+
+  getSettingDefinitions(): SettingDefinitionItem[] {
+    return [
+      {
+        type: "group",
+        heading: "Folder Tags",
+        items: [
+          {
+            name: "Folder Tags settings",
+            desc: "Configure automatic tagging rules.",
+            render: (setting) => {
+              setting.settingEl.empty();
+              this.renderGeneral(setting.settingEl);
+              this.renderRules(setting.settingEl);
+            },
+          },
+        ],
+      },
+    ];
+  }
+
   display(): void {
     this.captureOpenRules();
     this.containerEl.empty();
-    this.containerEl.createEl("h2", { text: "Folder Tags" });
-    this.renderGeneral();
-    this.renderRules();
+    new Setting(this.containerEl).setName("Folder Tags").setHeading();
+    this.renderGeneral(this.containerEl);
+    this.renderRules(this.containerEl);
   }
 
   private captureOpenRules(): void {
@@ -39,15 +61,15 @@ export class FolderTagsSettingTab extends PluginSettingTab {
       else this.openRuleIds.delete(id);
     }
   }
-  private renderGeneral(): void {
-    this.containerEl.createEl("h3", { text: "General" });
-    new Setting(this.containerEl).setName("Enable plugin").addToggle((t) =>
+  private renderGeneral(containerEl: HTMLElement): void {
+    new Setting(containerEl).setName("General").setHeading();
+    new Setting(containerEl).setName("Enable plugin").addToggle((t) =>
       t.setValue(this.plugin.settings.enabled).onChange(async (v) => {
         this.plugin.settings.enabled = v;
         await this.plugin.saveSettings();
       }),
     );
-    new Setting(this.containerEl)
+    new Setting(containerEl)
       .setName("Apply automatically")
       .setDesc("Apply matching tags when a new Markdown file is created.")
       .addToggle((t) =>
@@ -57,11 +79,11 @@ export class FolderTagsSettingTab extends PluginSettingTab {
         }),
       );
   }
-  private renderRules(): void {
-    this.containerEl.createEl("h3", { text: "Rules" });
+  private renderRules(containerEl: HTMLElement): void {
+    new Setting(containerEl).setName("Rules").setHeading();
     for (const [index, rule] of this.plugin.settings.rules.entries())
-      this.renderRule(rule, index);
-    new Setting(this.containerEl).addButton((b) =>
+      this.renderRule(containerEl, rule, index);
+    new Setting(containerEl).addButton((b) =>
       b
         .setButtonText("Add rule")
         .setCta()
@@ -81,8 +103,12 @@ export class FolderTagsSettingTab extends PluginSettingTab {
         }),
     );
   }
-  private renderRule(rule: TagRule, index: number): void {
-    const details = this.containerEl.createEl("details", {
+  private renderRule(
+    containerEl: HTMLElement,
+    rule: TagRule,
+    index: number,
+  ): void {
+    const details = containerEl.createEl("details", {
       cls: "folder-tags-rule",
     });
     details.dataset.ruleId = rule.id;
@@ -160,7 +186,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
       .addButton((b) =>
         b
           .setButtonText("Delete")
-          .setWarning()
+          .setDestructive()
           .onClick(async () => {
             this.plugin.settings.rules = this.plugin.settings.rules.filter(
               (x) => x.id !== rule.id,

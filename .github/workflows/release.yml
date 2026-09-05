@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
 
 jobs:
   release:
@@ -30,6 +32,12 @@ jobs:
           npm test
       - name: Build
         run: npm run build
+      - name: Attest release assets
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            main.js
+            styles.css
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v3
         with:

@@ -3,6 +3,10 @@ import { TagRuleEngine, type ResolvedTagRule } from "./rule-engine";
 import { mergeTags, type FolderTagsSettings } from "./rules";
 import { filterFilesInFolder } from "./path-utils";
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 export interface TagApplyResult {
   file: TFile;
   applied: boolean;
@@ -101,14 +105,19 @@ export class TagOperations {
     if (preview.skipped || preview.error || !preview.addedTags?.length)
       return preview;
     try {
-      await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-        const existing = Array.isArray(frontmatter.tags)
-          ? frontmatter.tags
-          : typeof frontmatter.tags === "string"
-            ? [frontmatter.tags]
-            : [];
-        frontmatter.tags = mergeTags(existing, preview.addedTags ?? []);
-      });
+      await this.app.fileManager.processFrontMatter(
+        file,
+        (frontmatter: unknown) => {
+          if (!isRecord(frontmatter)) return;
+
+          const existing = Array.isArray(frontmatter.tags)
+            ? frontmatter.tags
+            : typeof frontmatter.tags === "string"
+              ? [frontmatter.tags]
+              : [];
+          frontmatter.tags = mergeTags(existing, preview.addedTags ?? []);
+        },
+      );
       return {
         ...preview,
         applied: true,

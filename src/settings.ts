@@ -25,7 +25,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     return [
       {
         type: "group",
-        heading: "Folder Tags",
+        heading: "Settings",
         items: [
           {
             name: "Folder Tags settings",
@@ -41,12 +41,9 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     ];
   }
 
-  display(): void {
+  private refresh(): void {
     this.captureOpenRules();
-    this.containerEl.empty();
-    new Setting(this.containerEl).setName("Folder Tags").setHeading();
-    this.renderGeneral(this.containerEl);
-    this.renderRules(this.containerEl);
+    this.update();
   }
 
   private captureOpenRules(): void {
@@ -62,7 +59,6 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     }
   }
   private renderGeneral(containerEl: HTMLElement): void {
-    new Setting(containerEl).setName("General").setHeading();
     new Setting(containerEl).setName("Enable plugin").addToggle((t) =>
       t.setValue(this.plugin.settings.enabled).onChange(async (v) => {
         this.plugin.settings.enabled = v;
@@ -99,7 +95,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
           this.plugin.settings.rules.push(rule);
           this.openRuleIds.add(rule.id);
           await this.plugin.saveSettings();
-          this.display();
+          this.refresh();
         }),
     );
   }
@@ -180,7 +176,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
           });
           this.openRuleIds.add(this.plugin.settings.rules[index + 1].id);
           await this.plugin.saveSettings();
-          this.display();
+          this.refresh();
         }),
       )
       .addButton((b) =>
@@ -193,7 +189,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
             );
             this.openRuleIds.delete(rule.id);
             await this.plugin.saveSettings();
-            this.display();
+            this.refresh();
           }),
       );
     details.addEventListener("toggle", () =>

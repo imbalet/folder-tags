@@ -51,13 +51,13 @@ export default class FolderTagsPlugin extends Plugin {
       id: "apply-current-file",
       name: "Apply tags to current file",
       checkCallback: (checking) =>
-        this.withCurrent(checking, (file) => this.applyToFile(file)),
+        this.withCurrent(checking, (file) => void this.applyToFile(file)),
     });
     this.addCommand({
       id: "apply-current-folder",
       name: "Apply tags to current folder",
       checkCallback: (checking) =>
-        this.withCurrent(checking, (file) => this.runFolder(file, false)),
+        this.withCurrent(checking, (file) => void this.runFolder(file, false)),
     });
     this.addCommand({
       id: "apply-entire-vault",
@@ -68,13 +68,13 @@ export default class FolderTagsPlugin extends Plugin {
       id: "preview-current-file",
       name: "Preview tags for current file",
       checkCallback: (checking) =>
-        this.withCurrent(checking, (file) => this.previewFiles([file])),
+        this.withCurrent(checking, (file) => void this.previewFiles([file])),
     });
     this.addCommand({
       id: "preview-current-folder",
       name: "Preview tags for current folder",
       checkCallback: (checking) =>
-        this.withCurrent(checking, (file) => this.runFolder(file, true)),
+        this.withCurrent(checking, (file) => void this.runFolder(file, true)),
     });
     this.addCommand({
       id: "preview-entire-vault",

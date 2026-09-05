@@ -3,7 +3,6 @@
   "name": "Folder Tags",
   "version": "0.1.0",
   "minAppVersion": "1.8.0",
-  "css": "styles.css",
   "description": "Automatically apply tags to notes based on their paths.",
   "author": "imbalet",
   "isDesktopOnly": false

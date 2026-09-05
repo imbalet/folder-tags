@@ -18,18 +18,6 @@ const options = {
   minify: production,
 };
 
-function copyToVault() {
-  fs.mkdirSync(pluginDir, {
-    recursive: true,
-  });
-
-  fs.copyFileSync("main.js", path.join(pluginDir, "main.js"));
-
-  fs.copyFileSync("styles.css", path.join(pluginDir, "styles.css"));
-
-  fs.copyFileSync("manifest.json", path.join(pluginDir, "manifest.json"));
-}
-
 if (production) {
   await esbuild.build(options);
 
@@ -40,6 +28,18 @@ if (production) {
   }
 
   const pluginDir = path.join(vaultPath, ".obsidian", "plugins", "folder-tags");
+
+  function copyToVault() {
+    fs.mkdirSync(pluginDir, {
+      recursive: true,
+    });
+
+    fs.copyFileSync("main.js", path.join(pluginDir, "main.js"));
+
+    fs.copyFileSync("styles.css", path.join(pluginDir, "styles.css"));
+
+    fs.copyFileSync("manifest.json", path.join(pluginDir, "manifest.json"));
+  }
 
   const context = await esbuild.context(options);
 

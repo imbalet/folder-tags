@@ -1,7 +1,7 @@
 {
   "id": "folder-tags",
   "name": "Folder Tags",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "1.13.0",
   "description": "Automatically apply tags to notes based on their paths.",
   "author": "imbalet",

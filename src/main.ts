@@ -1,12 +1,4 @@
-import {
-  App,
-  MarkdownView,
-  Modal,
-  Notice,
-  Plugin,
-  Setting,
-  TFile,
-} from "obsidian";
+import { App, MarkdownView, Modal, Notice, Plugin, TFile } from "obsidian";
 import {
   TagOperations,
   summarizeResults,

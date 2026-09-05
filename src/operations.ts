@@ -1,5 +1,5 @@
 import { App, getFrontMatterInfo, parseYaml, TFile } from "obsidian";
-import { TagRuleEngine, type ResolvedTagRule } from "./rule-engine";
+import { TagRuleEngine } from "./rule-engine";
 import { mergeTags, type FolderTagsSettings } from "./rules";
 import { filterFilesInFolder } from "./path-utils";
 
@@ -40,10 +40,6 @@ export class TagOperations {
     private readonly app: App,
     private readonly settings: FolderTagsSettings,
   ) {}
-
-  private matches(file: TFile): ResolvedTagRule[] {
-    return new TagRuleEngine(this.settings.rules).match(file.path);
-  }
 
   private calculate(file: TFile, existing: readonly unknown[]) {
     const engine = new TagRuleEngine(this.settings.rules);

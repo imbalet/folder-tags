@@ -6,17 +6,6 @@ const production = process.argv.includes("production");
 
 const vaultPath = process.env.OBSIDIAN_VAULT;
 
-if (!vaultPath) {
-  throw new Error("OBSIDIAN_VAULT is not set.");
-}
-
-const pluginDir = path.join(
-  vaultPath,
-  ".obsidian",
-  "plugins",
-  "folder-templates",
-);
-
 const options = {
   entryPoints: ["src/main.ts"],
   bundle: true,
@@ -46,6 +35,12 @@ if (production) {
 
   console.log("Built production plugin.");
 } else {
+  if (!vaultPath) {
+    throw new Error("OBSIDIAN_VAULT is not set for dev mode.");
+  }
+
+  const pluginDir = path.join(vaultPath, ".obsidian", "plugins", "folder-tags");
+
   const context = await esbuild.context(options);
 
   await context.watch();

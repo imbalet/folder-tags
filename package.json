@@ -12,6 +12,7 @@
     "format:check": "prettier --check src test README.md package.json esbuild.config.mjs styles.css manifest.json versions.json .prettierrc.json .github/workflows/*.yml"
   },
   "keywords": [],
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "obsidian-path-matcher": "^0.1.0"

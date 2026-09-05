@@ -11,6 +11,8 @@ import type FolderTagsPlugin from "./main";
 import type { TagRule } from "./rules";
 
 export class FolderTagsSettingTab extends PluginSettingTab {
+  private readonly openRuleIds = new Set<string>();
+
   constructor(
     app: App,
     private readonly plugin: FolderTagsPlugin,
@@ -18,10 +20,24 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     super(app, plugin);
   }
   display(): void {
+    this.captureOpenRules();
     this.containerEl.empty();
     this.containerEl.createEl("h2", { text: "Folder Tags" });
     this.renderGeneral();
     this.renderRules();
+  }
+
+  private captureOpenRules(): void {
+    for (const details of Array.from(
+      this.containerEl.querySelectorAll<HTMLDetailsElement>(
+        "details[data-rule-id]",
+      ),
+    )) {
+      const id = details.dataset.ruleId;
+      if (!id) continue;
+      if (details.open) this.openRuleIds.add(id);
+      else this.openRuleIds.delete(id);
+    }
   }
   private renderGeneral(): void {
     this.containerEl.createEl("h3", { text: "General" });
@@ -50,14 +66,16 @@ export class FolderTagsSettingTab extends PluginSettingTab {
         .setButtonText("Add rule")
         .setCta()
         .onClick(async () => {
-          this.plugin.settings.rules.push({
+          const rule: TagRule = {
             id: crypto.randomUUID(),
             name: `Rule ${this.plugin.settings.rules.length + 1}`,
             enabled: true,
             pattern: "^notes/",
             mode: "regex",
             tags: ["example"],
-          });
+          };
+          this.plugin.settings.rules.push(rule);
+          this.openRuleIds.add(rule.id);
           await this.plugin.saveSettings();
           this.display();
         }),
@@ -67,6 +85,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     const details = this.containerEl.createEl("details", {
       cls: "folder-tags-rule",
     });
+    details.dataset.ruleId = rule.id;
     const summary = details.createEl("summary", {
       cls: "folder-tags-rule-header",
     });
@@ -133,6 +152,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
             name: `${rule.name} copy`,
             tags: [...rule.tags],
           });
+          this.openRuleIds.add(this.plugin.settings.rules[index + 1].id);
           await this.plugin.saveSettings();
           this.display();
         }),
@@ -145,6 +165,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
             this.plugin.settings.rules = this.plugin.settings.rules.filter(
               (x) => x.id !== rule.id,
             );
+            this.openRuleIds.delete(rule.id);
             await this.plugin.saveSettings();
             this.display();
           }),
@@ -152,7 +173,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     details.addEventListener("toggle", () =>
       icon.setText(details.open ? "▾" : "▸"),
     );
-    details.open = false;
+    details.open = this.openRuleIds.has(rule.id);
   }
 }
 

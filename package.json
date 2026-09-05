@@ -1,0 +1,27 @@
+{
+  "name": "folder-tags",
+  "version": "0.1.0",
+  "description": "Automatically apply tags to Obsidian notes based on their paths",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production",
+    "check": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "format": "prettier --write src test README.md package.json",
+    "format:check": "prettier --check src test README.md package.json"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "dependencies": {
+    "obsidian-path-matcher": "file:../obsidian-path-matcher"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "esbuild": "^0.28.2",
+    "obsidian": "^1.13.1",
+    "typescript": "^5.0.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.13"
+  }
+}

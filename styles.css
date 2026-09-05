@@ -1,0 +1,10 @@
+.folder-tags-rule { box-sizing: border-box; width: 100%; border: 1px solid var(--background-modifier-border); border-radius: 8px; margin: 12px 0; overflow: hidden; }
+.folder-tags-rule > summary { list-style: none; }
+.folder-tags-rule > summary::-webkit-details-marker { display: none; }
+.folder-tags-rule-header { display: flex; align-items: center; width: 100%; box-sizing: border-box; padding: 8px 10px; cursor: pointer; }
+.folder-tags-rule-header-left { display: flex; align-items: center; flex: 1; min-width: 0; }
+.folder-tags-rule-collapse { flex: 0 0 16px; width: 16px; margin-right: 6px; color: var(--text-muted); user-select: none; }
+.folder-tags-rule-name { width: 100%; min-width: 0; font-weight: 600; border: none !important; background: transparent !important; box-shadow: none !important; }
+.folder-tags-rule-body { padding: 0 10px 10px; }
+.folder-tags-preview-item { border-top: 1px solid var(--background-modifier-border); padding: 8px 0; }
+.folder-tags-preview-item h3, .folder-tags-preview-item p { margin: 4px 0; }

@@ -1,5 +1,5 @@
 import { App, getFrontMatterInfo, parseYaml, TFile } from "obsidian";
-import { TagRuleEngine, type ResolvedTagRule } from "./path-matcher";
+import { TagRuleEngine, type ResolvedTagRule } from "./rule-engine";
 import { mergeTags, type FolderTagsSettings } from "./rules";
 import { filterFilesInFolder } from "./path-utils";
 

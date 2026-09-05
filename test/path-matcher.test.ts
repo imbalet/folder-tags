@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { TagRuleEngine } from "../src/path-matcher";
+import { TagRuleEngine } from "../src/rule-engine";
 
 test("matches all enabled rules and substitutes captures", () => {
   const engine = new TagRuleEngine([

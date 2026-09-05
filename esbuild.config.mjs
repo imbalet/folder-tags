@@ -36,7 +36,7 @@ function copyToVault() {
 
   fs.copyFileSync("main.js", path.join(pluginDir, "main.js"));
 
-  fs.copyFileSync("src/styles.css", path.join(pluginDir, "styles.css"));
+  fs.copyFileSync("styles.css", path.join(pluginDir, "styles.css"));
 
   fs.copyFileSync("manifest.json", path.join(pluginDir, "manifest.json"));
 }
@@ -52,7 +52,7 @@ if (production) {
 
   copyToVault();
 
-  fs.watch("src/styles.css", () => {
+  fs.watch("styles.css", () => {
     copyToVault();
     console.log("Copied styles.css → vault");
   });

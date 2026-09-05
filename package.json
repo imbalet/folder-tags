@@ -8,8 +8,8 @@
     "build": "node esbuild.config.mjs production",
     "check": "tsc --noEmit",
     "test": "node --import tsx --test test/*.test.ts",
-    "format": "prettier --write src test README.md package.json esbuild.config.mjs styles.css",
-    "format:check": "prettier --check src test README.md package.json esbuild.config.mjs styles.css"
+    "format": "prettier --write src test README.md package.json esbuild.config.mjs styles.css manifest.json versions.json .prettierrc.json",
+    "format:check": "prettier --check src test README.md package.json esbuild.config.mjs styles.css manifest.json versions.json .prettierrc.json"
   },
   "keywords": [],
   "type": "commonjs",
@@ -17,9 +17,9 @@
     "obsidian-path-matcher": "file:../obsidian-path-matcher"
   },
   "devDependencies": {
-    "@types/node": "^26.4.1",
-    "esbuild": "^0.28.2",
-    "obsidian": "^1.13.1",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "obsidian": "^1.8.7",
     "typescript": "^5.0.0",
     "prettier": "^3.9.6",
     "tsx": "^4.23.13"

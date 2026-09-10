@@ -1,6 +1,6 @@
 {
   "name": "folder-tags",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Automatically apply tags to Obsidian notes based on their paths",
   "main": "main.js",
   "scripts": {

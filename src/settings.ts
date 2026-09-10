@@ -32,6 +32,7 @@ export class FolderTagsSettingTab extends PluginSettingTab {
             desc: "Configure automatic tagging rules.",
             render: (setting) => {
               setting.settingEl.empty();
+              setting.settingEl.addClass("folder-tags-settings-container");
               this.renderGeneral(setting.settingEl);
               this.renderRules(setting.settingEl);
             },
@@ -67,12 +68,42 @@ export class FolderTagsSettingTab extends PluginSettingTab {
     );
     new Setting(containerEl)
       .setName("Apply automatically")
-      .setDesc("Apply matching tags when a new Markdown file is created.")
+      .setDesc("Apply matching tags automatically.")
       .addToggle((t) =>
         t.setValue(this.plugin.settings.automatic).onChange(async (v) => {
           this.plugin.settings.automatic = v;
           await this.plugin.saveSettings();
         }),
+      );
+    new Setting(containerEl)
+      .setName("Automatic trigger")
+      .setDesc("Choose when automatic processing starts.")
+      .addDropdown((d) =>
+        d
+          .addOption("create", "When file is created")
+          .addOption("rename", "When file is named")
+          .setValue(this.plugin.settings.automaticTrigger)
+          .onChange(async (value) => {
+            this.plugin.settings.automaticTrigger =
+              value === "rename" ? "rename" : "create";
+            await this.plugin.saveSettings();
+          }),
+      );
+    new Setting(containerEl)
+      .setName("Automatic delay (ms)")
+      .setDesc("Wait before applying automatic rules. 0 means immediately.")
+      .addText((text) =>
+        text
+          .setValue(String(this.plugin.settings.automaticDelayMs))
+          .onChange(async (value) => {
+            const delay = Number(value);
+            if (!Number.isFinite(delay)) return;
+            this.plugin.settings.automaticDelayMs = Math.max(
+              0,
+              Math.round(delay),
+            );
+            await this.plugin.saveSettings();
+          }),
       );
   }
   private renderRules(containerEl: HTMLElement): void {

@@ -2,6 +2,8 @@ import type { MatchMode } from "obsidian-path-matcher";
 
 export type { MatchMode };
 
+export type AutomaticTrigger = "create" | "rename";
+
 export interface TagRule {
   id: string;
   name: string;
@@ -14,12 +16,16 @@ export interface TagRule {
 export interface FolderTagsSettings {
   enabled: boolean;
   automatic: boolean;
+  automaticTrigger: AutomaticTrigger;
+  automaticDelayMs: number;
   rules: TagRule[];
 }
 
 export const DEFAULT_SETTINGS: FolderTagsSettings = {
   enabled: true,
   automatic: true,
+  automaticTrigger: "create",
+  automaticDelayMs: 0,
   rules: [],
 };
 
@@ -46,6 +52,13 @@ export function normalizeSettings(data: unknown): FolderTagsSettings {
       typeof source.automatic === "boolean"
         ? source.automatic
         : DEFAULT_SETTINGS.automatic,
+    automaticTrigger:
+      source.automaticTrigger === "rename" ? "rename" : "create",
+    automaticDelayMs:
+      typeof source.automaticDelayMs === "number" &&
+      Number.isFinite(source.automaticDelayMs)
+        ? Math.max(0, Math.round(source.automaticDelayMs))
+        : DEFAULT_SETTINGS.automaticDelayMs,
     rules: rawRules.flatMap((value, index) => {
       if (!isRecord(value)) return [];
 

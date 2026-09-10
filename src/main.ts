@@ -7,9 +7,12 @@ import {
 import {
   DEFAULT_SETTINGS,
   normalizeSettings,
+  type AutomaticTrigger,
   type FolderTagsSettings,
 } from "./rules";
 import { FolderTagsSettingTab } from "./settings";
+
+const LOG_PREFIX = "[folder-tags]";
 
 export default class FolderTagsPlugin extends Plugin {
   settings: FolderTagsSettings = DEFAULT_SETTINGS;
@@ -17,21 +20,51 @@ export default class FolderTagsPlugin extends Plugin {
   async onload(): Promise<void> {
     const data: unknown = await this.loadData();
     this.settings = normalizeSettings(data);
+    console.log(LOG_PREFIX, "loaded", {
+      enabled: this.settings.enabled,
+      automatic: this.settings.automatic,
+      rules: this.settings.rules.length,
+    });
     this.addSettingTab(new FolderTagsSettingTab(this.app, this));
     this.registerCommands();
     this.app.workspace.onLayoutReady(() =>
       this.registerEvent(
         this.app.vault.on("create", (file) => {
-          if (
-            file instanceof TFile &&
-            file.extension === "md" &&
-            this.settings.enabled &&
-            this.settings.automatic
-          )
-            void this.applyToFile(file);
+          console.log(LOG_PREFIX, "create", file.path);
+          if (file instanceof TFile) void this.handleAutomatic(file, "create");
         }),
       ),
     );
+    this.app.workspace.onLayoutReady(() =>
+      this.registerEvent(
+        this.app.vault.on("rename", (file, oldPath) => {
+          if (!(file instanceof TFile)) return;
+          const slash = oldPath.lastIndexOf("/");
+          const oldParent = slash < 0 ? "" : oldPath.slice(0, slash);
+          const newParent = file.parent?.path ?? "";
+          if (oldParent !== newParent) return;
+          void this.handleAutomatic(file, "rename");
+        }),
+      ),
+    );
+  }
+
+  private async handleAutomatic(
+    file: TFile,
+    trigger: AutomaticTrigger,
+  ): Promise<void> {
+    if (
+      file.extension !== "md" ||
+      !this.settings.enabled ||
+      !this.settings.automatic ||
+      this.settings.automaticTrigger !== trigger
+    )
+      return;
+    if (this.settings.automaticDelayMs > 0)
+      await new Promise<void>((resolve) =>
+        window.setTimeout(resolve, this.settings.automaticDelayMs),
+      );
+    await this.applyToFile(file);
   }
 
   async saveSettings(): Promise<void> {
@@ -91,6 +124,7 @@ export default class FolderTagsPlugin extends Plugin {
     const result = await new TagOperations(this.app, this.settings).applyToFile(
       file,
     );
+    console.log(LOG_PREFIX, "result", file.path, result.reason ?? result.error);
     if (result.applied) new Notice(`Tags applied: ${file.path}`);
     else if (result.error) new Notice(`Tag error: ${result.error}`);
   }

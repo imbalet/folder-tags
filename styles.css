@@ -1,3 +1,8 @@
+.folder-tags-settings-container {
+  display: block;
+  width: 100%;
+}
+
 .folder-tags-rule {
   box-sizing: border-box;
   width: 100%;
